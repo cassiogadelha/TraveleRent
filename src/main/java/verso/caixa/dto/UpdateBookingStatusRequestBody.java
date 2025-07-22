@@ -5,4 +5,7 @@ import verso.caixa.enums.BookingStatusEnum;
 public record UpdateBookingStatusRequestBody(
         BookingStatusEnum status
 ) {
+    public BookingStatusEnum getStatus() {
+        return status;
+    }
 }

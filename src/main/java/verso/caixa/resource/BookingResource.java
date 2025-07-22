@@ -6,8 +6,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import verso.caixa.dto.BookingRequestBody;
 import verso.caixa.dto.UpdateBookingStatusRequestBody;
-import verso.caixa.dto.UpdateVehicleStatusRequestBody;
-import verso.caixa.dto.VehicleRequestBody;
 import verso.caixa.service.BookingService;
 
 import java.util.UUID;

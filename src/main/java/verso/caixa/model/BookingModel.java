@@ -9,6 +9,9 @@ import lombok.Setter;
 import verso.caixa.enums.BookingStatusEnum;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +21,13 @@ import java.util.UUID;
 @Setter
 @Table(name = "tb_booking")
 public class BookingModel extends PanacheEntityBase {
+    private static final Map<BookingStatusEnum, Set<BookingStatusEnum>> BOOKING_STATUS = new HashMap<>() {
+    };
+
+    static {
+        BOOKING_STATUS.put(BookingStatusEnum.CREATED, Set.of(BookingStatusEnum.CANCELED, BookingStatusEnum.FINISHED));
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     public UUID bookingId;
@@ -35,5 +45,20 @@ public class BookingModel extends PanacheEntityBase {
         this.customerName = customerName;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public void setStatus(BookingStatusEnum incomingStatus) {
+        Set<BookingStatusEnum> possibleStatus = BOOKING_STATUS.get(this.status);
+
+        if (possibleStatus == null || !possibleStatus.contains(incomingStatus)) {
+            throw new IllegalArgumentException("Validation error, possible status are: " + possibleStatus);
+        }
+
+        if (incomingStatus.equals(this.status)) {
+            return;
+        }
+
+        this.status = incomingStatus;
+
     }
 }

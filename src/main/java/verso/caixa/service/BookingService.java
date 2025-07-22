@@ -10,6 +10,7 @@ import verso.caixa.dto.UpdateBookingStatusRequestBody;
 import verso.caixa.model.BookingModel;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +20,15 @@ import java.util.UUID;
 public class BookingService {
     public Response createBooking(@NotNull BookingRequestBody bookingRequestBody) {
         try {
+            if (bookingRequestBody.getStartDate().isBefore(LocalDate.now()))
+                throw new IllegalArgumentException("A data de início não pode ser anterior a hoje.");
+
+            if (bookingRequestBody.getEndDate().isBefore(bookingRequestBody.getStartDate()))
+                throw new IllegalArgumentException("A data de término não pode ser anterior a de início");
+
+            if (bookingRequestBody.getVehicleId() == null)
+                throw new IllegalArgumentException("O ID do veículo não é válido!");
+
             BookingModel newBookingModel = new BookingModel(
                     bookingRequestBody.getVehicleId(),
                     bookingRequestBody.getCustomerName(),
@@ -34,7 +44,9 @@ public class BookingService {
                     .build();
 
         } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
         }
     }
 
