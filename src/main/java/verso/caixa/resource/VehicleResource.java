@@ -53,7 +53,6 @@ public class VehicleResource {
     @Path("{id}")
     @Transactional
     public Response deleteById(@PathParam("id") UUID vehicleId){
-
         try {
             vehicleService.deleteById(vehicleId);
             return Response.noContent().build();
