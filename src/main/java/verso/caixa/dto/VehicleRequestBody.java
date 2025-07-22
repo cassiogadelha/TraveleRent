@@ -11,6 +11,7 @@ public class VehicleRequestBody {
     private VehicleStatusEnum status;
     private int year;
     private String engine;
+    private String brand;
 
     public String getModel() {
         return model;
@@ -43,4 +44,7 @@ public class VehicleRequestBody {
     public void setEngine(String engine) {
         this.engine = engine;
     }
+
+    public void setBrand(String brand) {this.brand = brand;}
+    public String getBrand() { return brand; }
 }

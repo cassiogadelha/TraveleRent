@@ -38,7 +38,7 @@ public class VehicleResourceIntegrationTest {
 
     @Transactional
     public void createVehicleInDatabase() {
-        VehicleModel vehicle = new VehicleModel("Mobi", 2025, "1.0");
+        VehicleModel vehicle = new VehicleModel("Mobi", "Renault", 2025, "1.0");
         vehicle.persist();
     }
 

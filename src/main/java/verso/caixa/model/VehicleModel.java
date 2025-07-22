@@ -41,11 +41,11 @@ public class VehicleModel extends PanacheEntityBase{
 
     protected VehicleModel() {}
 
-    public VehicleModel(String model, int year, String engine) {
-        this.status = VehicleStatusEnum.AVAILABLE;
+    public VehicleModel(String model, String brand, int year, String engine) {
         if (model == null || model.isBlank()) {
             throw new IllegalArgumentException("model must not be null");
         }
+        this.brand = brand;
         this.model = model;
         this.year = year;
         this.engine = engine;

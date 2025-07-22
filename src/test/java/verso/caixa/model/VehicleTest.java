@@ -21,7 +21,7 @@ public class VehicleTest {
 
     @Test
     void shouldCreateVehicleWithValidID() {
-        VehicleModel vehicle = new VehicleModel("Mobi", 2025, "1.0");
+        VehicleModel vehicle = new VehicleModel("Mobi", "Renault", 2025, "1.0");
 
         // assertions
         Assertions.assertNotNull(vehicle.getVehicleId());
@@ -29,7 +29,7 @@ public class VehicleTest {
 
     @Test
     void shouldCreateVehicleWithStatusAvailable() {
-        VehicleModel vehicle = new VehicleModel("Mobi", 2025, "1.0");
+        VehicleModel vehicle = new VehicleModel("Mobi", "Renault", 2025, "1.0");
 
         // assertions
         Assertions.assertEquals(VehicleStatusEnum.AVAILABLE, vehicle.getStatus());
@@ -37,7 +37,7 @@ public class VehicleTest {
 
     @Test
     void shouldChangeStatusToRentedOrUnderMaintenanceWhenCurrentStatusIsAvailable() {
-        VehicleModel vehicle = new VehicleModel("Mobi", 2025, "1.0");
+        VehicleModel vehicle = new VehicleModel("Mobi", "Renault", 2025, "1.0");
 
         vehicle.setStatus(VehicleStatusEnum.UNDER_MAINTENANCE);
 
@@ -46,7 +46,7 @@ public class VehicleTest {
 
     @Test
     void shouldThrowsChangeToRentedWhenTheCurrentStatusIsUnderMaintenance() {
-        VehicleModel vehicle = new VehicleModel("Mobi", 2025, "1.0");
+        VehicleModel vehicle = new VehicleModel("Mobi", "Renault", 2025, "1.0");
         vehicle.setStatus(VehicleStatusEnum.UNDER_MAINTENANCE);
 
         String message = Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -60,15 +60,15 @@ public class VehicleTest {
     void shouldCreateVehicleWithoutNullOrEmptyFields() {
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            new VehicleModel(null, 2025, "1.0");
+            new VehicleModel(null, "Renault", 2025, "1.0");
         });
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            new VehicleModel("", 2025, "1.0");
+            new VehicleModel("", "Renault", 2025, "1.0");
         });
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            new VehicleModel("    ", 2025, "1.0");
+            new VehicleModel("    ", "Renault", 2025, "1.0");
         });
 
     }

@@ -21,6 +21,7 @@ public class VehicleService {
     public Response createVehicle(VehicleRequestBody vehicleRequestBody){
         try {
             VehicleModel newVehicleModel = new VehicleModel(
+                    vehicleRequestBody.getBrand(),
                     vehicleRequestBody.getModel(),
                     vehicleRequestBody.getYear(),
                     vehicleRequestBody.getEngine());
