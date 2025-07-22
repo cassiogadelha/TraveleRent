@@ -1,5 +1,7 @@
 package verso.caixa.service;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
 import jakarta.ws.rs.core.Response;
 import verso.caixa.dto.UpdateVehicleStatusRequestBody;
 import verso.caixa.dto.VehicleRequestBody;
@@ -66,14 +68,15 @@ public class VehicleService {
         vehicleToDelete.delete();
     }
 
-    public Response getVehicleList() {
-        List<VehicleModel> vehicles = VehicleModel.listAll();
+    public Response getVehicleList(int page, int size) {
+        PanacheQuery<VehicleModel> vehicles = VehicleModel.findAll();
+        vehicles.page(Page.of(page, size));
 
-        if (vehicles.isEmpty()) {
+        if (vehicles.list().isEmpty()) {
             Map<String, String> response = Map.of("mensagem", "A lista de veículos está vazia."); //cria um map imutavel para ser convertido facilmente em Json
             return Response.status(Response.Status.OK).entity(response).build();
         } else {
-            return Response.ok(vehicles.stream().map(VehicleResponseBody::new).toList()).build();
+            return Response.ok(vehicles.list().stream().map(VehicleResponseBody::new).toList()).build();
         }
     }
 

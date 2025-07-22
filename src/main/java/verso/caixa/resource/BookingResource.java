@@ -23,15 +23,12 @@ public class BookingResource {
     @POST
     @Transactional
     public Response createBooking(BookingRequestBody bookingRequestBody){
-
         return bookingService.createBooking(bookingRequestBody);
     }
 
     @GET
     public Response findAllBookings(){
-
         return bookingService.getBookingList();
-
     }
 
     @GET

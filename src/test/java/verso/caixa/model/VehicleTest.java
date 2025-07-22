@@ -36,27 +36,6 @@ public class VehicleTest {
     }
 
     @Test
-    void shouldChangeStatusToRentedOrUnderMaintenanceWhenCurrentStatusIsAvailable() {
-        VehicleModel vehicle = new VehicleModel("Mobi", "Renault", 2025, "1.0");
-
-        vehicle.setStatus(VehicleStatusEnum.UNDER_MAINTENANCE);
-
-        Assertions.assertEquals(VehicleStatusEnum.UNDER_MAINTENANCE, vehicle.getStatus());
-    }
-
-    @Test
-    void shouldThrowsChangeToRentedWhenTheCurrentStatusIsUnderMaintenance() {
-        VehicleModel vehicle = new VehicleModel("Mobi", "Renault", 2025, "1.0");
-        vehicle.setStatus(VehicleStatusEnum.UNDER_MAINTENANCE);
-
-        String message = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            vehicle.setStatus(VehicleStatusEnum.RENTED);
-        }).getMessage();
-
-        Assertions.assertTrue(message.contains("Validation error"));
-    }
-
-    @Test
     void shouldCreateVehicleWithoutNullOrEmptyFields() {
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -71,5 +50,73 @@ public class VehicleTest {
             new VehicleModel("    ", "Renault", 2025, "1.0");
         });
 
+    }
+
+    @Test
+    void shouldChangeFromAvailableToRented() {
+        VehicleModel vehicle = new VehicleModel("Fiesta", "Ford", 2019, "1.6");
+        vehicle.setStatus(VehicleStatusEnum.RENTED);
+        Assertions.assertEquals(
+                VehicleStatusEnum.RENTED,
+                vehicle.getStatus() //AVAILABLE → RENTED deve ser permitido
+        );
+    }
+
+    @Test
+    void shouldChangeFromAvailableToUnderMaintenance() {
+        VehicleModel vehicle = new VehicleModel("Civic", "Honda", 2021, "2.0");
+        vehicle.setStatus(VehicleStatusEnum.UNDER_MAINTENANCE);
+        Assertions.assertEquals(
+                VehicleStatusEnum.UNDER_MAINTENANCE,
+                vehicle.getStatus() //"AVAILABLE → UNDER_MAINTENANCE deve ser permitido"
+        );
+    }
+
+    @Test
+    void shouldNotAllowUnderMaintenanceToRented() {
+        VehicleModel vehicle = new VehicleModel("Corolla", "Toyota", 2022, "1.8");
+        vehicle.setStatus(VehicleStatusEnum.UNDER_MAINTENANCE);
+
+        IllegalArgumentException ex = Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> vehicle.setStatus(VehicleStatusEnum.RENTED)
+        );
+        Assertions.assertTrue(
+                ex.getMessage().contains("possible status")
+        );
+    }
+
+    @Test
+    void settingSameStatusShouldBeNoOp() {
+        VehicleModel vehicle = new VehicleModel("Gol", "VW", 2018, "1.0");
+        vehicle.setStatus(VehicleStatusEnum.AVAILABLE);
+        // não deve lançar exceção nem alterar valor
+        Assertions.assertEquals(
+                VehicleStatusEnum.AVAILABLE,
+                vehicle.getStatus()
+        );
+    }
+
+    @Test
+    void shouldChangeFromRentedBackToAvailable() {
+        VehicleModel vehicle = new VehicleModel("Onix", "Chevrolet", 2023, "1.4");
+        vehicle.setStatus(VehicleStatusEnum.RENTED);
+        vehicle.setStatus(VehicleStatusEnum.AVAILABLE);
+        Assertions.assertEquals(
+                VehicleStatusEnum.AVAILABLE,
+                vehicle.getStatus()// RENTED → AVAILABLE deve ser permitido
+        );
+    }
+
+    @Test
+    void shouldChangeFromRentedToUnderMaintenance() {
+        VehicleModel vehicle = new VehicleModel("Renegade", "Jeep", 2021, "2.0");
+        vehicle.setStatus(VehicleStatusEnum.RENTED);
+        vehicle.setStatus(VehicleStatusEnum.UNDER_MAINTENANCE);
+        Assertions.assertEquals(
+                VehicleStatusEnum.UNDER_MAINTENANCE,
+                vehicle.getStatus() //RENTED → UNDER_MAINTENANCE deve ser permitido
+
+        );
     }
 }

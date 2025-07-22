@@ -1,6 +1,7 @@
 package verso.caixa.resource;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -24,22 +25,21 @@ public class VehicleResource {
 
     @POST
     @Transactional
-    public Response createVehicle(VehicleRequestBody vehicleRequestBody){
+    public Response createVehicle(@Valid VehicleRequestBody vehicleRequestBody){
 
         return vehicleService.createVehicle(vehicleRequestBody);
     }
 
     @GET
-    public Response findAllVehicles(){
-
-        return vehicleService.getVehicleList();
-
+    public Response findAllVehicles(@QueryParam("page") @DefaultValue("0") int page,
+                                    @QueryParam("size") @DefaultValue("10") int size){
+        return vehicleService.getVehicleList(page, size);
     }
 
     @GET
     @Path("{id}")
     public Response findById(@PathParam("id") UUID vehicleId){
-        return Response.ok(vehicleService.findById(vehicleId)).build();
+        return vehicleService.findById(vehicleId);
     }
 
     @PATCH

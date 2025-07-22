@@ -61,4 +61,6 @@ public class BookingModel extends PanacheEntityBase {
         this.status = incomingStatus;
 
     }
+
+
 }

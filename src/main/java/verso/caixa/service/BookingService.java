@@ -1,6 +1,7 @@
 package verso.caixa.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,9 @@ public class BookingService {
 
             newBookingModel.persist();
 
-            URI location = URI.create("/api/v1/bookings/" + newBookingModel.getVehicleId());
+            System.out.println("NEU BOOKING PERSISTED: " + newBookingModel.getBookingId());
+
+            URI location = URI.create("/api/v1/bookings/" + newBookingModel.getBookingId());
 
             return Response.created(location)
                     .entity(newBookingModel)
@@ -83,7 +86,9 @@ public class BookingService {
         try {
             bookingModel.setStatus(body.status());
         } catch (RuntimeException e) {
-            return Response.status(Response.Status.CONFLICT).build();
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(e.getMessage())
+                    .build();
         }
 
         return Response.noContent().build();

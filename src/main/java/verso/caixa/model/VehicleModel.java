@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_users")
+@Table(name = "tb_vehicle")
 public class VehicleModel extends PanacheEntityBase{
 
     private static final Map<VehicleStatusEnum, Set<VehicleStatusEnum>> VEHICLE_STATUS = new HashMap<>() {
@@ -33,7 +33,7 @@ public class VehicleModel extends PanacheEntityBase{
     private String brand;
 
     @Column(name = "vehicle_year")
-    private int year;
+    private Integer year;
 
     private String engine;
     private VehicleStatusEnum status = VehicleStatusEnum.AVAILABLE;
@@ -41,7 +41,7 @@ public class VehicleModel extends PanacheEntityBase{
 
     protected VehicleModel() {}
 
-    public VehicleModel(String model, String brand, int year, String engine) {
+    public VehicleModel(String brand, String model, int year, String engine) {
         if (model == null || model.isBlank()) {
             throw new IllegalArgumentException("model must not be null");
         }
@@ -63,7 +63,7 @@ public class VehicleModel extends PanacheEntityBase{
         return status;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
