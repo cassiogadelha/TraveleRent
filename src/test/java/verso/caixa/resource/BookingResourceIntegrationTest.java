@@ -228,7 +228,7 @@ public class BookingResourceIntegrationTest {
                 .when()
                 .get("/api/v1/bookings/{id}", bookingId)
                 .then()
-                //.log().body()
+                .log().body()
                 .statusCode(200)
                 .body("entity.bookingId", equalTo(bookingId))
                 .body("entity.status", equalTo("FINISHED"));
