@@ -58,7 +58,7 @@ public class BookingService {
 
         if (bookings.isEmpty()) {
             Map<String, String> response = Map.of("mensagem", "A lista de agendamentos está vazia."); //cria um map imutavel para ser convertido facilmente em Json
-            return Response.status(Response.Status.OK).entity(response).build();
+            return Response.ok(response).build();
         } else {
             return Response.ok(bookings.stream().map(BookingResponseBody::new).toList()).build();
         }

@@ -5,10 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import verso.caixa.enums.VehicleStatusEnum;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_vehicle")
@@ -33,9 +30,12 @@ public class VehicleModel extends PanacheEntityBase{
     private String brand;
 
     @Column(name = "vehicle_year")
+
     private Integer year;
 
     private String engine;
+
+    @Enumerated(EnumType.STRING)
     private VehicleStatusEnum status = VehicleStatusEnum.AVAILABLE;
     private String model;
 

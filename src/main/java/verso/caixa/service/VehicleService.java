@@ -74,7 +74,7 @@ public class VehicleService {
 
         if (vehicles.list().isEmpty()) {
             Map<String, String> response = Map.of("mensagem", "A lista de veículos está vazia."); //cria um map imutavel para ser convertido facilmente em Json
-            return Response.status(Response.Status.OK).entity(response).build();
+            return Response.ok(response).build();
         } else {
             return Response.ok(vehicles.list().stream().map(VehicleResponseBody::new).toList()).build();
         }
