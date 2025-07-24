@@ -3,22 +3,45 @@ package verso.caixa.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import verso.caixa.enums.VehicleStatusEnum;
 
 import java.util.*;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "tb_vehicle")
 public class VehicleModel extends PanacheEntityBase{
 
-    private static final Map<VehicleStatusEnum, Set<VehicleStatusEnum>> VEHICLE_STATUS = new HashMap<>() {
+    private static final Map<VehicleStatusEnum, Set<VehicleStatusEnum>> VEHICLE_STATE_MACHINE = new HashMap<>() {
     };
 
     static {
-        VEHICLE_STATUS.put(VehicleStatusEnum.AVAILABLE, Set.of(VehicleStatusEnum.RENTED, VehicleStatusEnum.UNDER_MAINTENANCE));
-        VEHICLE_STATUS.put(VehicleStatusEnum.RENTED, Set.of(VehicleStatusEnum.AVAILABLE, VehicleStatusEnum.UNDER_MAINTENANCE));
-        VEHICLE_STATUS.put(VehicleStatusEnum.UNDER_MAINTENANCE, Set.of(VehicleStatusEnum.AVAILABLE));
+        VEHICLE_STATE_MACHINE.put(VehicleStatusEnum.AVAILABLE, Set.of(VehicleStatusEnum.RENTED, VehicleStatusEnum.UNDER_MAINTENANCE));
+        VEHICLE_STATE_MACHINE.put(VehicleStatusEnum.RENTED, Set.of(VehicleStatusEnum.AVAILABLE, VehicleStatusEnum.UNDER_MAINTENANCE));
+        VEHICLE_STATE_MACHINE.put(VehicleStatusEnum.UNDER_MAINTENANCE, Set.of(VehicleStatusEnum.AVAILABLE));
     }
+
+    /*==================================== RELATIONSHIPS ===========================================*/
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "vehicle_id") //classe forte recebe o Join
+    private final List<MaintenanceModel> maintenances = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "vehicle_accessory",
+            joinColumns = @JoinColumn(name = "vehicle_id"),
+            /*Especifica que a tabela tb_maintenance terá uma coluna vehicle_id apontando para o veículo correspondente.
+            Ou seja, é ali que o banco sabe qual manutenção pertence a qual carro.*/
+
+            inverseJoinColumns = @JoinColumn(name = "accessory_id"))
+            /*na tabela de junção "vehicle_accessory":
+                       - A coluna "accessory_id" representa a chave estrangeira que aponta para a tabela AccessoryModel
+                       - Ou seja, ela vincula cada veículo aos acessórios correspondentes*/
+
+    private final Set<AccessoryModel> accessories = new HashSet<>();
+    /*------------------------------------------------------------------*/
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -51,32 +74,12 @@ public class VehicleModel extends PanacheEntityBase{
         this.engine = engine;
     }
 
-    public UUID getVehicleId() {
-        return vehicleId;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public VehicleStatusEnum getStatus() {
-        return status;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public String getEngine() {
-        return engine;
-    }
-
     public boolean isRented() {
         return this.getStatus().equals(VehicleStatusEnum.RENTED);
     }
 
     public void setStatus(VehicleStatusEnum incomingStatus) {
-        Set<VehicleStatusEnum> possibleStatus = VEHICLE_STATUS.get(this.status);
+        Set<VehicleStatusEnum> possibleStatus = VEHICLE_STATE_MACHINE.get(this.status);
 
         if (incomingStatus.equals(this.status)) {
             return;
@@ -89,8 +92,15 @@ public class VehicleModel extends PanacheEntityBase{
         }
     }
 
-    public String getBrand() {
-        return brand;
+    public void moveForMaintenance(MaintenanceModel maintenanceModel) {
+        this.setStatus(VehicleStatusEnum.UNDER_MAINTENANCE);
+        this.maintenances.add(maintenanceModel);
     }
+
+    public void addAccessory(AccessoryModel accessoryModel) {
+        this.accessories.add(accessoryModel);
+        accessoryModel.addVehicle(this);
+    }
+
 }
 

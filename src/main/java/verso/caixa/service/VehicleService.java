@@ -2,10 +2,13 @@ package verso.caixa.service;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import verso.caixa.dto.UpdateVehicleStatusRequestBody;
 import verso.caixa.dto.VehicleRequestBody;
 import verso.caixa.dto.VehicleResponseBody;
+import verso.caixa.mappers.VehicleMapper;
+import verso.caixa.model.MaintenanceModel;
 import verso.caixa.model.VehicleModel;
 import verso.caixa.exception.VehicleDeletionException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,9 +23,25 @@ import java.util.UUID;
 @ApplicationScoped //cria somente uma instancia durante todo o ciclo de vida da aplicação
 public class VehicleService {
 
+    @Inject
+    VehicleMapper vehicleMapper;
+
     public Response createVehicle(VehicleRequestBody vehicleRequestBody){
         try {
-            VehicleModel newVehicleModel = new VehicleModel(
+            VehicleModel vehicle = vehicleMapper.toEntity(vehicleRequestBody);
+
+            for (MaintenanceModel m : vehicle.getMaintenances()) {
+                m.setVehicle(vehicle);
+            }
+
+            vehicle.setCarTitle(vehicle.getModel() + " " + vehicle.getYear() + " " + vehicle.getEngine());
+
+            // Persistência em cascata
+            vehicle.persist();
+
+            return Response.status(Response.Status.CREATED).entity(new VehicleResponseBody(vehicle)).build();
+
+            /*VehicleModel newVehicleModel = new VehicleModel(
                     vehicleRequestBody.getBrand(),
                     vehicleRequestBody.getModel(),
                     vehicleRequestBody.getYear(),
@@ -34,7 +53,7 @@ public class VehicleService {
 
             return Response.created(location)
                     .entity(newVehicleModel)
-                    .build();
+                    .build();*/
 
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
