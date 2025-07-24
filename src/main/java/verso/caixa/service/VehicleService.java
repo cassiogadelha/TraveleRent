@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Response;
 import verso.caixa.dto.UpdateVehicleStatusRequestBody;
 import verso.caixa.dto.VehicleRequestBody;
 import verso.caixa.dto.VehicleResponseBody;
+import verso.caixa.enums.ErrorCode;
 import verso.caixa.mappers.VehicleMapper;
 import verso.caixa.model.MaintenanceModel;
 import verso.caixa.model.VehicleModel;
@@ -78,10 +79,10 @@ public class VehicleService {
         VehicleModel vehicleToDelete = VehicleModel.findById(vehicleId);
 
         if(vehicleToDelete == null)
-            throw new VehicleDeletionException("Veículo não encontrado!");
+            throw new VehicleDeletionException("Veículo não encontrado!", ErrorCode.VEHICLE_NOT_FOUND);
 
         if (vehicleToDelete.isRented()) {
-            throw new VehicleDeletionException("Veículo não pode ser deletado pois está alugado!");
+            throw new VehicleDeletionException("Veículo não pode ser deletado pois está alugado!", ErrorCode.VEHICLE_RENTED_DELETE_DENIED);
         }
 
         vehicleToDelete.delete();
