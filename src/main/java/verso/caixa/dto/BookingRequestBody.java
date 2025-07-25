@@ -1,5 +1,8 @@
 package verso.caixa.dto;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +19,14 @@ import java.util.UUID;
 public class BookingRequestBody {
     public UUID vehicleId;
     String customerName;
+
+    @NotNull(message = "A data de início não pode ser nula")
+    @FutureOrPresent(message = "A data de início não pode ser anterior a hoje.")
     LocalDate startDate;
+
+    @NotNull(message = "A data de término não pode ser nula")
+    @Future(message = "A data de término não pode ser anterior a de início")
     LocalDate endDate;
+
     BookingStatusEnum status;
 }

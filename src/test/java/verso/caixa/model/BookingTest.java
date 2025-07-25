@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import verso.caixa.dto.BookingRequestBody;
 import verso.caixa.dto.UpdateBookingStatusRequestBody;
 import verso.caixa.enums.BookingStatusEnum;
-import verso.caixa.enums.VehicleStatusEnum;
 import verso.caixa.service.BookingService;
 
 import java.time.LocalDate;

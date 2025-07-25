@@ -47,13 +47,12 @@ public class VehicleModel extends PanacheEntityBase{
     @GeneratedValue(strategy = GenerationType.UUID)
     public UUID vehicleId;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "car_title")
     private String carTitle;
 
     private String brand;
 
     @Column(name = "vehicle_year")
-
     private Integer year;
 
     private String engine;

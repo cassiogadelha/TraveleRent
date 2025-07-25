@@ -21,9 +21,6 @@ import java.util.UUID;
 public class BookingService {
     public Response createBooking(@NotNull BookingRequestBody bookingRequestBody) {
         try {
-            if (bookingRequestBody.getStartDate().isBefore(LocalDate.now()))
-                throw new IllegalArgumentException("A data de início não pode ser anterior a hoje.");
-
             if (bookingRequestBody.getEndDate().isBefore(bookingRequestBody.getStartDate()))
                 throw new IllegalArgumentException("A data de término não pode ser anterior a de início");
 
@@ -37,8 +34,6 @@ public class BookingService {
                     bookingRequestBody.getEndDate());
 
             newBookingModel.persist();
-
-            System.out.println("NEU BOOKING PERSISTED: " + newBookingModel.getBookingId());
 
             URI location = URI.create("/api/v1/bookings/" + newBookingModel.getBookingId());
 

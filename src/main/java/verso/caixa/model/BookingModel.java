@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@Entity
+@Entity //ORM PANACHE no pom
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -38,6 +38,7 @@ public class BookingModel extends PanacheEntityBase {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @Enumerated(EnumType.STRING)
     private BookingStatusEnum status = BookingStatusEnum.CREATED;
 
     public BookingModel(UUID vehicleId, String customerName, LocalDate startDate, LocalDate endDate) {

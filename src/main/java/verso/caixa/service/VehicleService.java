@@ -40,7 +40,11 @@ public class VehicleService {
             // Persistência em cascata
             vehicle.persist();
 
-            return Response.status(Response.Status.CREATED).entity(new VehicleResponseBody(vehicle)).build();
+            URI location = URI.create("/api/v1/vehicles/" + vehicle.getVehicleId());
+            return Response.created(location)
+                    .entity(new VehicleResponseBody(vehicle))
+                    .build();
+
 
             /*VehicleModel newVehicleModel = new VehicleModel(
                     vehicleRequestBody.getBrand(),

@@ -1,6 +1,7 @@
 package verso.caixa.resource;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -22,7 +23,7 @@ public class BookingResource {
 
     @POST
     @Transactional
-    public Response createBooking(BookingRequestBody bookingRequestBody){
+    public Response createBooking(@Valid BookingRequestBody bookingRequestBody){
         return bookingService.createBooking(bookingRequestBody);
     }
 
