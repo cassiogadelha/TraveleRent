@@ -2,21 +2,20 @@ package verso.caixa.service;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
+import lombok.Getter;
 import verso.caixa.dto.UpdateVehicleStatusRequestBody;
 import verso.caixa.dto.VehicleRequestBody;
 import verso.caixa.dto.VehicleResponseBody;
 import verso.caixa.enums.ErrorCode;
+import verso.caixa.exception.VehicleDeletionException;
 import verso.caixa.mappers.VehicleMapper;
 import verso.caixa.model.MaintenanceModel;
 import verso.caixa.model.VehicleModel;
-import verso.caixa.exception.VehicleDeletionException;
-import jakarta.enterprise.context.ApplicationScoped;
-import lombok.Getter;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,21 +43,6 @@ public class VehicleService {
             return Response.created(location)
                     .entity(new VehicleResponseBody(vehicle))
                     .build();
-
-
-            /*VehicleModel newVehicleModel = new VehicleModel(
-                    vehicleRequestBody.getBrand(),
-                    vehicleRequestBody.getModel(),
-                    vehicleRequestBody.getYear(),
-                    vehicleRequestBody.getEngine());
-
-            newVehicleModel.persist();
-
-            URI location = URI.create("/api/v1/vehicles/" + newVehicleModel.getVehicleId());
-
-            return Response.created(location)
-                    .entity(newVehicleModel)
-                    .build();*/
 
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();

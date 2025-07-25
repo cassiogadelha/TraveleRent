@@ -8,7 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import verso.caixa.dto.BookingRequestBody;
 import verso.caixa.dto.BookingResponseBody;
 import verso.caixa.dto.UpdateBookingStatusRequestBody;
+import verso.caixa.mappers.BookingMapper;
+import verso.caixa.mappers.VehicleMapper;
 import verso.caixa.model.BookingModel;
+import verso.caixa.model.VehicleModel;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -19,26 +22,26 @@ import java.util.UUID;
 @Getter
 @ApplicationScoped //cria somente uma instancia durante todo o ciclo de vida da aplicação
 public class BookingService {
+
+    BookingMapper bookingMapper;
+
+    public BookingService(BookingMapper bookingMapper){
+        this.bookingMapper = bookingMapper;
+    }
+
+    @Transactional
     public Response createBooking(@NotNull BookingRequestBody bookingRequestBody) {
         try {
             if (bookingRequestBody.getEndDate().isBefore(bookingRequestBody.getStartDate()))
                 throw new IllegalArgumentException("A data de término não pode ser anterior a de início");
 
-            if (bookingRequestBody.getVehicleId() == null)
-                throw new IllegalArgumentException("O ID do veículo não é válido!");
+            BookingModel newBooking = bookingMapper.toEntity(bookingRequestBody);
+            newBooking.persist();
 
-            BookingModel newBookingModel = new BookingModel(
-                    bookingRequestBody.getVehicleId(),
-                    bookingRequestBody.getCustomerName(),
-                    bookingRequestBody.getStartDate(),
-                    bookingRequestBody.getEndDate());
-
-            newBookingModel.persist();
-
-            URI location = URI.create("/api/v1/bookings/" + newBookingModel.getBookingId());
+            URI location = URI.create("/api/v1/bookings/" + newBooking.getBookingId());
 
             return Response.created(location)
-                    .entity(newBookingModel)
+                    .entity(newBooking)
                     .build();
 
         } catch (IllegalArgumentException e) {
